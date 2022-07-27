@@ -17,6 +17,14 @@ sudo docker pull enrico2docker/ubuntu-mystique:1.1
 echo "Creating Mystique Container"
 sudo docker run --name mystique -p 6633:6633 -d -t enrico2docker/ubuntu-mystique:1.1
 
+echo "Waiting for Docker container"
+while ( ! sudo docker ps | grep mystique); do
+  echo "Waiting for Docker container"
+  sleep 3
+done
+
+touch happy.txt
+
 # config Ryu
 # data_frequency= ' 1'
 # support_switches=' s0'
