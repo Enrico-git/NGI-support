@@ -11,6 +11,14 @@ while [ ! "$(command -v docker)" ]; do
   sleep 1
 done
 
+while (! sudo docker stats --no-stream ); do
+  # Docker takes a few seconds to initialize
+  echo "Waiting for Docker to launch..."
+  sleep 1
+done
+
+sudo touch happy2.txt
+
 echo "Downloading Mystique Image"
 sudo docker pull enrico2docker/ubuntu-mystique:1.1
 
