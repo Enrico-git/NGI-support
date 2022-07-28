@@ -5,7 +5,7 @@ sudo curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 
 echo "Waiting for Docker to launch..."
-while (! sudo docker stats --no-stream ); do
+while [ ! "$(command -v docker)" ]; do
   # Docker takes a few seconds to initialize
   echo "Waiting for Docker to launch..."
   sleep 1
@@ -23,7 +23,7 @@ while ( ! sudo docker ps | grep mystique); do
   sleep 3
 done
 
-touch happy.txt
+sudo touch happy.txt
 
 # config Ryu
 # data_frequency= ' 1'
