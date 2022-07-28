@@ -23,7 +23,7 @@ while ( ! sudo docker ps | grep mystique); do
   sleep 3
 done
 
-touch happy.txt
+sudo touch happy.txt
 
 # config Ryu
 # data_frequency= ' 1'
