@@ -32,16 +32,3 @@ while ( ! sudo docker ps | grep mystique); do
 done
 
 sudo touch happy.txt
-
-# config Ryu
-# data_frequency= ' 1'
-# support_switches=' s0'
-# cmd_config_ryu = '/bin/bash /mystique/ryu_controller/config_ryu.sh'+data_frequency+support_switches #config.ini - ryu_controller
-# cmd_docker_ryu = 'sudo docker exec -d mystique ' + cmd_config_ryu
-
-
-# config Model
-
-#run ryu
-
-#run train
