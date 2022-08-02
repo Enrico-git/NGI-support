@@ -4,10 +4,10 @@
 # and switches goes from .0.1 to .6.255
 INTFS=$(ip address | grep 192.168.[0-6])
 
-SW=$(ls -A /sys/class/net | grep s[0-9] )
-NUM_INTFS=$(ls -A /sys/class/net | wc -l)
-
 IP_CTRL=${1}
+#SW=$(ls -A /sys/class/net | grep s[0-9] )
+SW=${2}
+NUM_INTFS=$(ls -A /sys/class/net | wc -l)
 
 #Creating OVS switch
 sudo ovs-vsctl add-br $SW
