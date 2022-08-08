@@ -10,12 +10,12 @@ class TrafficGenerator:
     def __init__(self):
         self.hostname=sys.argv[1]
         self.list_ip=sys.argv[2].split(',')
-        self.svr_num = int(len(list_ip)/3) #svs = last 'svr_num' from the list
+        self.svr_num = int(len(self.list_ip)/3) #svs = last 'svr_num' from the list
         self.cl_num = int(len(self.list_ip) - self.svr_num)
-       
+
         #Grab IP host
-        proc = subprocess.run(['hostname', '-I'], capture_output=True)
-        list_addresses = proc.stdout.decode('utf-8').split(' ')
+        proc = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE, universal_newlines=True)
+        list_addresses = proc.stdout.split(' ')
         self.my_addr = list(filter(lambda el: el.startswith('192.168'), list_addresses))[0]
 
         self.iperf_time = 60    # seconds
@@ -23,7 +23,7 @@ class TrafficGenerator:
         self.first_port=6969
         random.seed(19951018+int(self.hostname[1:]))
         
-    def run_server(port):
+    def run_server(self, port):
         #run one thread for each port
         server = iperf3.Server()
         server.bind_address=self.my_addr
@@ -38,7 +38,7 @@ class TrafficGenerator:
         if self.my_addr in self.list_ip[-self.svr_num:]: #one of the server
             for i in range(self.cl_num): #One thread for each port!
                 th_port = self.first_port + i
-                th = Thread(target=run_server, args=(th_port, ) )
+                th = Thread(target=self.run_server, args=(th_port, ) )
                 th.start()
         
         for i in range(self.num_iperf):
@@ -73,7 +73,7 @@ class TrafficGenerator:
                             # Writing data to a file
                             file1.write(json_test)
                     break
-                else
+                else:
                     time.sleep(15)
                     continue
             time.sleep(random.randint(1, 10))
@@ -81,3 +81,6 @@ class TrafficGenerator:
 if __name__ == '__main__':
     tf = TrafficGenerator()
     tf.generate_traffic()
+    
+
+#python3 config_host.py h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
