@@ -2,52 +2,82 @@ import sys
 import random
 import subprocess
 import time
+import iperf3
+from threading import Thread
 
 class TrafficGenerator:
 
     def __init__(self):
-       self.hostname=sys.argv[1]
-       self.list_ip=sys.argv[2].split(',')
+        self.hostname=sys.argv[1]
+        self.list_ip=sys.argv[2].split(',')
+        self.svr_num = int(len(list_ip)/3) #svs = last 'svr_num' from the list
+        self.cl_num = int(len(self.list_ip) - self.svr_num)
        
-       self.svr_num = int(len(list_ip)/3)
-       
-       proc = subprocess.run(['hostname', '-I'], capture_output=True)
-       list_addresses = proc.stdout.decode('utf-8').split(' ')
-       self.my_addr = list(filter(lambda el: el.startswith('192.168'), list_addresses))[0]
-       
- #       self.hosts = {x: f'192.168.1.{x}' for x in range(3, 5)}
+        #Grab IP host
+        proc = subprocess.run(['hostname', '-I'], capture_output=True)
+        list_addresses = proc.stdout.decode('utf-8').split(' ')
+        self.my_addr = list(filter(lambda el: el.startswith('192.168'), list_addresses))[0]
 
         self.iperf_time = 60    # seconds
         self.num_iperf = 60*10  # 1 min * 10 = 10 min * 6 = 1 h * 6 = 6h
-        random.seed(19951018+int(self.hostname[1:]))    
+        self.first_port=6969
+        random.seed(19951018+int(self.hostname[1:]))
+        
+    def run_server(port):
+        #run one thread for each port
+        server = iperf3.Server()
+        server.bind_address=self.my_addr
+        server.port=port
+        print(f'iperf3 -s from {self.my_addr}, port {port}')
+        while True:
+            test = server.run()
+            print(test)
 
-    def generate_traffic(self):    
+    def generate_traffic(self):
+        # NOTE: last addresses in the list are used as iperf3 -s
         if self.my_addr in self.list_ip[-self.svr_num:]: #one of the server
-            print(f'iperf3 -s from {self.my_addr}')
-            subprocess.run(['iperf3', '-s'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            for i in range(self.cl_num): #One thread for each port!
+                th_port = self.first_port + i
+                th = Thread(target=run_server, args=(th_port, ) )
+                th.start()
         
         for i in range(self.num_iperf):
             print(f'iteration {i}/{self.num_iperf}')
+            # generate a random iperf3 request: f(t, bw, svr)
+            client = iperf3.Client()
+            client.port=self.first_port + int(self.hostname[1:])
+            client.bandwidth = 10
             if self.hostname != 'h0':
-                # generate a random iperf3 request: f(t, bw, svr)
                 r_index = -random.randint(1, self.svr_num)   #-1, -2, -N
-                client = self.list_ip[r_index]  # NOTE: last addresses in the list are used as iperf3 -s
-                bw = random.randint(1, 10)
-                iperf_time = random.randint(30, 90)
-            else:
-                #the first host does static request to the last server only
-                client = self.list_ip[-1]
-                bw = 10
-                iperf_time = 120
-            print(f'iperf to {client}, bw: {bw}, time: {iperf_time}')
-            subprocess.run(['iperf3', '-c', client, '-b', f'{bw}M', '-t', f'{iperf_time}'],
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                client.server_hostname = self.list_ip[r_index]  
+                #client.bandwidth = random.randint(1, 10)
+                client.duration = random.randint(30, 90)
+            else: # h0 does static request to the last server only
+                client.server_hostname = self.list_ip[-1]
+                client.duration = 120
+            
+            while True:
+                print(f'iperf to {client.server_hostname}, bw: {client.bandwidth}, time: {client.duration}')
+                test = client.run()
+                if test.error == None:
+                    json_test = test.json
+                    bps = json_test['end']['streams'][0]['sender']['bits_per_second']
+                    max_rtt=json_test['end']['streams'][0]['sender']['max_rtt']
+                    min_rtt=json_test['end']['streams'][0]['sender']['min_rtt']
+                    mean_rtt=json_test['end']['streams'][0]['sender']['mean_rtt']
+                    print(f'bps: {bps}, mean_rtt: {mean_rtt}')
+                    if self.hostname == 'h0':
+                        #save measurement on file.
+                        filename = 'iperf3_b'+client.bandwidth+'_it'+i+'.json'
+                        with open(filename, "w") as file1:
+                            # Writing data to a file
+                            file1.write(json_test)
+                    break
+                else
+                    time.sleep(15)
+                    continue
             time.sleep(random.randint(1, 10))
-                
-                
-                
-
 
 if __name__ == '__main__':
     tf = TrafficGenerator()
-#    tf.generate_traffic()
+    tf.generate_traffic()
