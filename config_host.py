@@ -67,7 +67,7 @@ class TrafficGenerator:
                         json_test = test.json
                         Mbps = test.sent_Mbps
                         mean_rtt=json_test['end']['streams'][0]['sender']['mean_rtt']
-                        print(f'Mbps: {bps}, mean_rtt: {mean_rtt}')
+                        print(f'Mbps: {Mbps}, mean_rtt: {mean_rtt}')
                         if self.hostname == 'h0':
                             #save measurement on file.
                             Mbps = int((client.bandwidth/1024)/1024)
