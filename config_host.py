@@ -4,6 +4,7 @@ import subprocess
 import time
 import iperf3
 from multiprocessing import Process
+import json
 
 class TrafficGenerator:
 
@@ -50,7 +51,7 @@ class TrafficGenerator:
                 # generate a random iperf3 request: f(t, bw, svr)
                 client = iperf3.Client()
                 client.port=self.first_port + int(self.hostname[1:])
-                client.bandwidth = 10
+                client.bandwidth = 10 * 1024 * 1024 #bps
                 if self.hostname != 'h0':
                     r_index = -random.randint(1, self.svr_num)   #-1, -2, -N
                     client.server_hostname = self.list_ip[r_index]  
@@ -72,10 +73,11 @@ class TrafficGenerator:
                         print(f'bps: {bps}, mean_rtt: {mean_rtt}')
                         if self.hostname == 'h0':
                             #save measurement on file.
-                            filename = 'iperf3_b'+client.bandwidth+'_it'+i+'.json'
+                            Mbps = int((client.bandwidth/1024)/1024)
+                            filename = 'iperf3_b'+str(Mbps)+'_it'+str(i)+'.json'
                             with open(filename, "w") as file1:
                                 # Writing data to a file
-                                file1.write(json_test)
+                                file1.write(json.dumps(json_test))
                         break
                     else:
                         time.sleep(15)
