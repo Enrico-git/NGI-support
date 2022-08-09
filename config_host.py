@@ -19,8 +19,7 @@ class TrafficGenerator:
         list_addresses = proc.stdout.split(' ')
         self.my_addr = list(filter(lambda el: el.startswith('192.168'), list_addresses))[0]
 
-        self.iperf_time = 60    # seconds
-        self.num_iperf = 60*10  # 1 min * 10 = 10 min * 6 = 1 h * 6 = 6h
+        self.num_iperf = 20  # 1 min * 10 = 10 min * 6 = 1 h * 6 = 6h
         self.first_port=6969
         random.seed(19951018+int(self.hostname[1:]))
         
@@ -66,9 +65,7 @@ class TrafficGenerator:
                     test = client.run()
                     if test.error == None:
                         json_test = test.json
-                        bps = json_test['end']['streams'][0]['sender']['bits_per_second']
-                        max_rtt=json_test['end']['streams'][0]['sender']['max_rtt']
-                        min_rtt=json_test['end']['streams'][0]['sender']['min_rtt']
+                        bps = test.sent_Mbps
                         mean_rtt=json_test['end']['streams'][0]['sender']['mean_rtt']
                         print(f'bps: {bps}, mean_rtt: {mean_rtt}')
                         if self.hostname == 'h0':
@@ -77,7 +74,7 @@ class TrafficGenerator:
                             filename = 'iperf3_b'+str(Mbps)+'_it'+str(i)+'.json'
                             with open(filename, "w") as file1:
                                 # Writing data to a file
-                                file1.write(json.dumps(json_test))
+                                file1.write(json.dumps(json_test['end']))
                         break
                     else:
                         time.sleep(15)
