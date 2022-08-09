@@ -80,6 +80,7 @@ class TrafficGenerator:
                     else:
                         time.sleep(15)
                         continue
+                del client
                 time.sleep(random.randint(1, 10))
 
 if __name__ == '__main__':
