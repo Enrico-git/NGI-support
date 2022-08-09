@@ -65,13 +65,13 @@ class TrafficGenerator:
                     test = client.run()
                     if test.error == None:
                         json_test = test.json
-                        bps = test.sent_Mbps
+                        Mbps = test.sent_Mbps
                         mean_rtt=json_test['end']['streams'][0]['sender']['mean_rtt']
-                        print(f'bps: {bps}, mean_rtt: {mean_rtt}')
+                        print(f'Mbps: {bps}, mean_rtt: {mean_rtt}')
                         if self.hostname == 'h0':
                             #save measurement on file.
                             Mbps = int((client.bandwidth/1024)/1024)
-                            filename = 'iperf3_b'+str(Mbps)+'_it'+str(i)+'.json'
+                            filename = 'iperf3_Mb'+str(Mbps)+'_it'+str(i)+'.json'
                             with open(filename, "w") as file1:
                                 # Writing data to a file
                                 file1.write(json.dumps(json_test['end']))
