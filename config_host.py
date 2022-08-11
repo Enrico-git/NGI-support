@@ -59,10 +59,10 @@ class TrafficGenerator:
                         r_index = -random.randint(1, self.svr_num)   #-1, -2, -N
                         client.server_hostname = self.list_ip[r_index]
                         #client.bandwidth = random.randint(1, 10)
-                        client.duration = random.randint(30, 60)
+                        client.duration = random.randint(10, 30)
                     else: # h0 does static request to the last server only
                         client.server_hostname = self.list_ip[-1]
-                        client.duration = 45
+                        client.duration = 20
 
                     while True:
                         print(f'iperf to {client.server_hostname}, bw: {client.bandwidth}bps, time: {client.duration}s')
@@ -78,7 +78,7 @@ class TrafficGenerator:
                                 filename = 'iperf3_Mb'+str(Mbps)+'_it'+str(i)+'.json'
                                 with open(filename, "w") as file1:
                                     # Writing data to a file
-                                    file1.write(json.dumps(json_test['end']))
+                                    file1.write(json.dumps(json_test))
                             break
                         else:
                             print(test.error)
@@ -95,4 +95,4 @@ if __name__ == '__main__':
     tf.generate_traffic()
     
 
-#python3 config_host.py h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
+#python3 NGI-support-main/config_host.py h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
