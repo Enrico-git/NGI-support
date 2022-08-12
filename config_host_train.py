@@ -65,8 +65,7 @@ class TrafficGenerator:
                         client.duration = 15
 
                     #decide the actions to do. 0 = sleep; 1 = iperf3
-                    action = random.randint(0, 1)
-                    if action == 0 and self.hostname != 'h0':
+                    if i > 5 and i < 12:
                         print(f'sleeping for {client.duration}s')
                         time.sleep(client.duration)
                     else:
@@ -78,13 +77,6 @@ class TrafficGenerator:
                                 Mbps = test.sent_Mbps
                                 mean_rtt=json_test['end']['streams'][0]['sender']['mean_rtt']
                                 print(f'Mbps: {Mbps}, mean_rtt: {mean_rtt}')
-                                if self.hostname == 'h0':
-                                    #save measurement on file.
-                                    Mbps = int((client.bandwidth/1024)/1024)
-                                    filename = 'iperf3_Mb'+str(Mbps)+'_it'+str(i)+'.json'
-                                    with open(filename, "w") as file1:
-                                        # Writing data to a file
-                                        file1.write(json.dumps(json_test))
                                 break
                             else:
                                 print(test.error)
