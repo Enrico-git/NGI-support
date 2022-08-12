@@ -64,14 +64,13 @@ class TrafficGenerator:
                         client.server_hostname = self.list_ip[-1]
                         client.duration = 15
 
-                    while True:
-                        #decide the actions to do. 0 = sleep; 1 = iperf3
-                        action = random.randint(0, 1)
-                        if action == 0 and self.hostname != 'h0':
-                            print(f'sleeping for {client.duration}s')
-                            time.sleep(client.duration)
-                            break
-                        else:
+                    #decide the actions to do. 0 = sleep; 1 = iperf3
+                    action = random.randint(0, 1)
+                    if action == 0 and self.hostname != 'h0':
+                        print(f'sleeping for {client.duration}s')
+                        time.sleep(client.duration)
+                    else:
+                        while True:
                             print(f'iperf to {client.server_hostname}, bw: {client.bandwidth}bps, time: {client.duration}s')
                             test = client.run()
                             if test.error == None:
@@ -87,8 +86,9 @@ class TrafficGenerator:
                                         # Writing data to a file
                                         file1.write(json.dumps(json_test))
                                     if action == 0:
-                                        print(f'sleeping for {client.duration}s')
-                                        time.sleep(client.duration)
+                                        sleep_time = random.randint(5, 10)
+                                        print(f'sleeping for {sleep_time}s')
+                                        time.sleep(sleep_time)
                                 break
                             else:
                                 print(test.error)
