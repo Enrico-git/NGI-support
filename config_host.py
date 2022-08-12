@@ -92,9 +92,10 @@ class TrafficGenerator:
                                 break
                             else:
                                 print(test.error)
-                                time.sleep(15)
+                                time.sleep(10)
                                 continue
                     del client
+                    time.sleep(random.randint(1, 5))
                     
 
 if __name__ == '__main__':
