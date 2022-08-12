@@ -59,33 +59,43 @@ class TrafficGenerator:
                         r_index = -random.randint(1, self.svr_num)   #-1, -2, -N
                         client.server_hostname = self.list_ip[r_index]
                         #client.bandwidth = random.randint(1, 10)
-                        client.duration = random.randint(10, 30)
+                        client.duration = random.randint(10, 20)
                     else: # h0 does static request to the last server only
                         client.server_hostname = self.list_ip[-1]
-                        client.duration = 20
+                        client.duration = 15
 
                     while True:
-                        print(f'iperf to {client.server_hostname}, bw: {client.bandwidth}bps, time: {client.duration}s')
-                        test = client.run()
-                        if test.error == None:
-                            json_test = test.json
-                            Mbps = test.sent_Mbps
-                            mean_rtt=json_test['end']['streams'][0]['sender']['mean_rtt']
-                            print(f'Mbps: {Mbps}, mean_rtt: {mean_rtt}')
-                            if self.hostname == 'h0':
-                                #save measurement on file.
-                                Mbps = int((client.bandwidth/1024)/1024)
-                                filename = 'iperf3_Mb'+str(Mbps)+'_it'+str(i)+'.json'
-                                with open(filename, "w") as file1:
-                                    # Writing data to a file
-                                    file1.write(json.dumps(json_test))
+                        #decide the actions to do. 0 = sleep; 1 = iperf3
+                        action = random.randint(0, 1)
+                        if action == 0 and self.hostname != 'h0':
+                            print(f'sleeping for {client.duration}s')
+                            time.sleep(client.duration)
                             break
                         else:
-                            print(test.error)
-                            time.sleep(15)
-                            continue
+                            print(f'iperf to {client.server_hostname}, bw: {client.bandwidth}bps, time: {client.duration}s')
+                            test = client.run()
+                            if test.error == None:
+                                json_test = test.json
+                                Mbps = test.sent_Mbps
+                                mean_rtt=json_test['end']['streams'][0]['sender']['mean_rtt']
+                                print(f'Mbps: {Mbps}, mean_rtt: {mean_rtt}')
+                                if self.hostname == 'h0':
+                                    #save measurement on file.
+                                    Mbps = int((client.bandwidth/1024)/1024)
+                                    filename = 'iperf3_Mb'+str(Mbps)+'_it'+str(i)+'.json'
+                                    with open(filename, "w") as file1:
+                                        # Writing data to a file
+                                        file1.write(json.dumps(json_test))
+                                    if action == 0:
+                                        print(f'sleeping for {client.duration}s')
+                                        time.sleep(client.duration)
+                                break
+                            else:
+                                print(test.error)
+                                time.sleep(15)
+                                continue
                     del client
-                    time.sleep(random.randint(1, 10))
+                    
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
