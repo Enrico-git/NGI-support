@@ -64,8 +64,9 @@ class TrafficGenerator:
                         client.server_hostname = self.list_ip[-1]
                         client.duration = 15
 
-                    #sleep one whole XMbps
-                    if j % 2 == 0 :
+                    #sleep 1/3 of request
+                    action = random.randint(0, 2)
+                    if action == 0 and self.hostname != 'h0':
                         print(f'sleeping for {client.duration}s')
                         time.sleep(client.duration)
                     else:
