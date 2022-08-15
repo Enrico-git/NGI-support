@@ -21,7 +21,7 @@ class TrafficGenerator:
         list_addresses = proc.stdout.split(' ')
         self.my_addr = list(filter(lambda el: el.startswith('192.168'), list_addresses))[0]
 
-        self.num_iperf = 20  # 1 min * 10 = 10 min * 6 = 1 h * 6 = 6h
+        self.num_iperf = 10  # 1 min * 10 = 10 min * 6 = 1 h * 6 = 6h
         self.num_load = 10 # from 10 Mbps to 100 Mbps
         self.first_port=6969
         random.seed(19951018+int(self.hostname[1:]))
