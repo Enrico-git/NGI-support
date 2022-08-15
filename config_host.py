@@ -100,4 +100,5 @@ if __name__ == '__main__':
     tf.generate_traffic()
     
 
-#python3 NGI-support-main/config_host.py h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
+#python3 NGI-support-main/config_host.py train 10 h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
+#python3 NGI-support-main/config_host.py test 15 h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
