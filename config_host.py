@@ -79,14 +79,14 @@ class TrafficGenerator:
                     client.bandwidth = 10 * (j + 1) * 1024 * 1024 #Mbps
                     
                     #find which server open the selected port
-                    for i in range(self.svr_num):
-                        start_range_port_svr = self.first_port + (i * self.num_port_each_svr)
+                    for k in range(self.svr_num):
+                        start_range_port_svr = self.first_port + (k * self.num_port_each_svr)
                         end_range_port_svr = start_range_port_svr + self.num_port_each_svr
-                        if i == (self.svr_num -1):
-                            remaining_port = (self.cl_num - (i * self.num_port_each_svr))
+                        if k == (self.svr_num -1):
+                            remaining_port = (self.cl_num - (k * self.num_port_each_svr))
                             end_range_port_svr = start_range_port_svr + remaining_port + 1 
                         if client.port >= start_range_port_svr and client.port < end_range_port_svr:
-                            client.server_hostname = self.ip_svrs[i]
+                            client.server_hostname = self.ip_svrs[k]
                             break
                     if self.hostname != 'h0':
                         client.duration = random.randint(10, 20)
