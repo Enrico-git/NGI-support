@@ -39,10 +39,12 @@ class TrafficGenerator:
         server = iperf3.Server()
         server.bind_address=self.my_addr
         server.port=port
-        print(f'iperf3 -s from {self.my_addr}, port {port}')
+        with open('file', 'a') as sys.stdout:
+            print(f'iperf3 -s from {self.my_addr}, port {port}')
         while True:
             test = server.run()
-            print(test)
+            with open('file', 'a') as sys.stdout:
+                print(test)
 
     def generate_traffic(self):        
         if self.my_addr in self.ip_svrs: #one of the server
