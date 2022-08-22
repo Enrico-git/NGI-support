@@ -20,6 +20,10 @@ class TrafficGenerator:
         if self.svr_num == 0:
             self.svr_num = 1
         self.cl_num = int(len(self.list_ip) - self.svr_num)
+        
+        # NOTE: last addresses in the list are used as iperf3 -s
+        self.ip_svrs = self.list_ip[-self.svr_num:]
+        self.num_port_each_svr = int(self.cl_num/self.svr_num)
 
         #Grab IP host
         proc = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE, universal_newlines=True)
@@ -40,17 +44,29 @@ class TrafficGenerator:
             test = server.run()
             print(test)
 
-    def generate_traffic(self):
-        # NOTE: last addresses in the list are used as iperf3 -s
-        if self.my_addr in self.list_ip[-self.svr_num:]: #one of the server
+    def generate_traffic(self):        
+        if self.my_addr in self.ip_svrs: #one of the server
+            index = self.ip_svrs.index(self.my_addr)
             processes = []
-            for i in range(self.cl_num): #One thread for each port!
-                proc_port = self.first_port + i
-                proc = Process(target=self.run_server, args=(proc_port, ) )
-                processes.append(proc)
-                proc.start()
-            for i in range(self.cl_num):
-                processes[i].join()
+            if self.my_addr != self.ip_svrs[-1]:
+                #run num port needed for each server
+                for i in range(self.num_port_each_svr): #One thread for each port!
+                    proc_port = self.first_port + (index * self.num_port_each_svr) + i
+                    proc = Process(target=self.run_server, args=(proc_port, ) )
+                    processes.append(proc)
+                    proc.start()
+                for i in range(self.num_port_each_svr):
+                    processes[i].join()
+            else:
+                #run num_port_each_svr + what it rests
+                remaining_port = (self.cl_num - (index * self.num_port_each_svr))
+                for i in range(remaining_port): #One thread for each port!
+                    proc_port = self.first_port + (index * self.num_port_each_svr)  + i
+                    proc = Process(target=self.run_server, args=(proc_port, ) )
+                    processes.append(proc)
+                    proc.start()
+                for i in range(remaining_port):
+                    processes[i].join()
         else:
             for j in range(self.num_load): # 20 test at [10, 20, 30, ..., 100] Mbps
                 for i in range(self.num_iperf):
@@ -59,13 +75,20 @@ class TrafficGenerator:
                     client = iperf3.Client()
                     client.port=self.first_port + int(self.hostname[1:])
                     client.bandwidth = 10 * (j + 1) * 1024 * 1024 #Mbps
+                    
+                    #find which server open the selected port
+                    for i in range(self.svr_num):
+                        start_range_port_svr = self.first_port + (i * self.num_port_each_svr)
+                        end_range_port_svr = start_range_port_svr + self.num_port_each_svr
+                        if i == (self.svr_num -1):
+                            remaining_port = (self.cl_num - (i * self.num_port_each_svr))
+                            end_range_port_svr = start_range_port_svr + remaining_port + 1 
+                        if client.port >= start_range_port_svr and client.port < end_range_port_svr:
+                            client.server_hostname = self.ip_svrs[i]
+                            break
                     if self.hostname != 'h0':
-                        r_index = -random.randint(1, self.svr_num)   #-1, -2, -N
-                        client.server_hostname = self.list_ip[r_index]
-                        #client.bandwidth = random.randint(1, 10)
                         client.duration = random.randint(10, 20)
-                    else: # h0 does static request to the last server only
-                        client.server_hostname = self.list_ip[-1]
+                    else:
                         client.duration = 15
 
                     while True:
