@@ -104,10 +104,10 @@ class TrafficGenerator:
                             if self.gender.lower() == 'test' and self.hostname == 'h0':
                                 #save measurement on file.
                                 Mbps = int((client.bandwidth/1024)/1024)
-                                filename = 'iperf3_Mb'+str(Mbps)+'_it'+str(i)+'.json'
-                                with open(filename, "w") as file1:
+                                filename = 'iperf3_total.txt'
+                                with open(filename, "a") as file1:
                                     # Writing data to a file
-                                    file1.write(json.dumps(json_test))
+                                    file1.write(json.dumps(json_test)+'\n')
                             break
                         else:
                             print(test.error)
