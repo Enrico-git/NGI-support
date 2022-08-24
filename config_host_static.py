@@ -68,13 +68,13 @@ class TrafficGenerator:
                     proc = Process(target=self.run_server, args=(proc_port, ) )
                     processes.append(proc)
                     proc.start()
-                    processes[i].join()
+                    processes[0].join()
             elif self.hostname == 'h9':
                     proc_port = 6972 # 6972= h3
                     proc = Process(target=self.run_server, args=(proc_port, ) )
                     processes.append(proc)
                     proc.start()
-                    processes[i].join()
+                    processes[0].join()
         else:
             for j in range(self.num_load): # 20 test at [10, 20, 30, ..., 100] Mbps
                 for i in range(self.num_iperf):
@@ -130,5 +130,7 @@ if __name__ == '__main__':
     tf.generate_traffic()
     
 
-#python3 NGI-support-main/config_host.py train 10 h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
-#python3 NGI-support-main/config_host.py test 15 h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
+#git clone https://github.com/Enrico-git/NGI-support.git
+#sudo rm -rf /NGI-support-main/ ; sudo mv NGI-support/ /NGI-support-main
+#python3 /NGI-support-main/config_host_static.py train 2 h0 192.168.0.2,192.168.0.4,192.168.0.9,192.168.0.11,192.168.0.15,192.168.0.17,192.168.0.30,192.168.0.32,192.168.0.37,192.168.0.39
+#python3 /NGI-support-main/config_host_static.py test 15 h0 192.168.0.2,192.168.0.4,192.168.0.9,192.168.0.11,192.168.0.15,192.168.0.17,192.168.0.30,192.168.0.32,192.168.0.37,192.168.0.39
