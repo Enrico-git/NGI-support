@@ -20,10 +20,10 @@ done
 sudo touch happy2.txt
 
 echo "Downloading Mystique Image"
-sudo docker pull enrico2docker/ubuntu-mystique:1.2
+sudo docker pull enrico2docker/ubuntu-mystique:1.3
 
 echo "Creating Mystique Container"
-sudo docker run --name mystique -p 6633:6633 -d -t enrico2docker/ubuntu-mystique:1.2
+sudo docker run --name mystique -p 6633:6633 -d -t enrico2docker/ubuntu-mystique:1.3
 
 echo "Waiting for Docker container"
 while ( ! sudo docker ps | grep mystique); do
