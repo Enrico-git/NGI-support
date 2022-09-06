@@ -83,6 +83,7 @@ class TrafficGenerator:
                     client = iperf3.Client()
                     client.port=self.first_port + int(self.hostname[1:])
                     client.bandwidth = 10 * (j + 1) * 1024 * 1024 #Mbps
+                    client.duration = 120 # seconds
                     
                     #find which server open the selected port
                     if self.hostname == 'h0' or self.hostname == 'h1':
@@ -93,10 +94,6 @@ class TrafficGenerator:
                         client.server_hostname = self.ip_svrs[2]    #h8
                     elif self.hostname == 'h3':
                         client.server_hostname = self.ip_svrs[3]    #h9
-                    
-                    client.duration = 15
-                    if j >= 5:
-                        client.duration = 60
                     
                     while True:
                         print(f'iperf to {client.server_hostname}, bw: {client.bandwidth}bps, time: {client.duration}s')
