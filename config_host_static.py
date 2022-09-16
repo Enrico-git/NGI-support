@@ -36,12 +36,12 @@ class TrafficGenerator:
         server = iperf3.Server()
         server.bind_address=self.my_addr
         server.port=port
-        with open('file', 'a') as sys.stdout:
-            print(f'iperf3 -s from {self.my_addr}, port {port}')
+        # with open('file', 'a') as sys.stdout:
+        print(f'iperf3 -s from {self.my_addr}, port {port}')
         while True:
             test = server.run()
-            with open('file', 'a') as sys.stdout:
-                print(test)
+            # with open('file', 'a') as sys.stdout:
+            print(test)
 
     def generate_traffic(self):        
         if self.my_addr in self.ip_svrs: #one of the server
@@ -129,5 +129,5 @@ if __name__ == '__main__':
 
 #git clone https://github.com/Enrico-git/NGI-support.git
 #sudo rm -rf /NGI-support-main/ ; sudo mv NGI-support/ /NGI-support-main
-#python3 /NGI-support-main/config_host_static.py train 2 h0 192.168.0.2,192.168.0.4,192.168.0.9,192.168.0.11,192.168.0.15,192.168.0.17,192.168.0.30,192.168.0.32,192.168.0.37,192.168.0.39
-#python3 /NGI-support-main/config_host_static.py test 15 h0 192.168.0.2,192.168.0.4,192.168.0.9,192.168.0.11,192.168.0.15,192.168.0.17,192.168.0.30,192.168.0.32,192.168.0.37,192.168.0.39
+#python3 /NGI-support-main/config_host_static.py train 3 h0 192.168.0.2,192.168.0.4,192.168.0.9,192.168.0.11,192.168.0.15,192.168.0.17,192.168.0.30,192.168.0.32,192.168.0.37,192.168.0.39
+#python3 /NGI-support-main/config_host_static.py test 8 h0 192.168.0.2,192.168.0.4,192.168.0.9,192.168.0.11,192.168.0.15,192.168.0.17,192.168.0.30,192.168.0.32,192.168.0.37,192.168.0.39
