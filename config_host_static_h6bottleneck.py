@@ -1,5 +1,6 @@
-# This file is created from h6bottleneck.
-# In this file h0 send to h6 and h1 send to h7
+# In this file h0 and h1 send to h6 creating a bottleneck. 
+# we will remove this bottleneck, by using h6 dedicated to h0 
+# and moving h1 to an other server.
 
 import sys
 import random
@@ -51,20 +52,20 @@ class TrafficGenerator:
             processes = []
             if self.hostname == 'h6':
                 #run num port needed for each server
-                for i in range(1): #One thread for each port!
-                    proc_port = self.first_port + i # 6969= h0, 6970=*EMPTY*
+                for i in range(2): #One thread for each port!
+                    proc_port = self.first_port + i # 6969= h0, 6970=h1
                     proc = Process(target=self.run_server, args=(proc_port, ) )
                     processes.append(proc)
                     proc.start()
-                for i in range(1):
+                for i in range(2):
                     processes[i].join()
             elif self.hostname == 'h7':
-                for i in range(3): #One thread for each port!
-                    proc_port = 6973 + i # 6973=h4, 6974=h5, h1=6975
+                for i in range(2): #One thread for each port!
+                    proc_port = 6973 + i # 6973= h4, 6974=h5
                     proc = Process(target=self.run_server, args=(proc_port, ) )
                     processes.append(proc)
                     proc.start()
-                for i in range(3):
+                for i in range(2):
                     processes[i].join()
             elif self.hostname == 'h8':
                     proc_port = 6971 # 6971= h2
@@ -85,8 +86,6 @@ class TrafficGenerator:
                     # generate a random iperf3 request: f(t, bw, svr)
                     client = iperf3.Client()
                     client.port=self.first_port + int(self.hostname[1:])
-                    if self.hostname == 'h1':
-                        client.port=6975
                     client.bandwidth = 10 * (j + 1) * 1024 * 1024 #Mbps
                     client.duration = 120 # seconds
                     
