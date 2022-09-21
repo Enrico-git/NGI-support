@@ -88,7 +88,7 @@ class TrafficGenerator:
                     if self.hostname == 'h1':
                         client.port=6975
                     client.bandwidth = 10 * (j + 1) * 1024 * 1024 #Mbps
-                    client.duration = 120 # seconds
+                    client.duration = 20 # seconds
                     
                     #find which server open the selected port
                     if self.hostname == 'h0':
