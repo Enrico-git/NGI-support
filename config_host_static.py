@@ -17,7 +17,7 @@ class TrafficGenerator:
             print('insert test or train only!')
             exit(-2)
         self.num_iperf=int(sys.argv[2])
-        self.hostname=sys.argv[3]
+        self.hostname=sys.argv[3] #TODO This can be obtained from index(my_ip, list)
         self.list_ip=sys.argv[4].split(',')
         self.svr_num = 4 #h6, h7, h8, h9
         self.cl_num = int(len(self.list_ip) - self.svr_num)
@@ -91,9 +91,9 @@ class TrafficGenerator:
                     client.duration = 120 # seconds
                     
                     #find which server open the selected port
-                    if self.hostname == 'h0' or self.hostname == 'h1':
+                    if self.hostname == 'h0':
                         client.server_hostname = self.ip_svrs[0]    #h6
-                    elif self.hostname == 'h4' or self.hostname == 'h5':
+                    elif self.hostname == 'h4' or self.hostname == 'h5' or self.hostname == 'h1':
                         client.server_hostname = self.ip_svrs[1]    #h7
                     elif self.hostname == 'h2':
                         client.server_hostname = self.ip_svrs[2]    #h8
