@@ -49,6 +49,9 @@ class TrafficGenerator:
             subprocess.run(['sudo', 'netserver', '-4', '-p', f'{port}'],
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         else:
+            #kill previous
+            subprocess.run(['sudo', 'pkill', 'python3'],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             server = iperf3.Server()
             server.bind_address=self.my_addr
             server.port=port
@@ -103,12 +106,12 @@ class TrafficGenerator:
                         proc = subprocess.run(['netperf', '-H', f'{server_hostname}', '-p', f'{port}',
                                         '-l', f'{duration}', '-t', 'TCP_RR', '--', '-o', 'mean_latency'],
                             stdout=subprocess.PIPE, universal_newlines=True)
-                        meant_rtt = proc.stdout.split('\n')[-2]
+                        mean_rtt = proc.stdout.split('\n')[-2]
                         print(f'mean_rtt: {mean_rtt}')
                         #save measurement on file.
                         filename = 'netperf_latency.txt'
                         with open(filename, "a") as file1:
-                            file1.write(json.dumps(meant_rtt)+'\n')
+                            file1.write(json.dumps(mean_rtt)+'\n')
                     else:
                         # generate a random iperf3 request: f(t, bw, svr)
                         client = iperf3.Client()
@@ -154,4 +157,4 @@ if __name__ == '__main__':
 #git clone https://github.com/Enrico-git/NGI-support.git
 #sudo rm -rf /NGI-support-main/ ; sudo mv NGI-support/ /NGI-support-main
 
-#python3 /NGI-support-main/config_host_static_netperf.py 1 192.168.0.2,192.168.0.4,192.168.0.9,192.168.0.11,192.168.0.15,192.168.0.17,192.168.0.30,192.168.0.32,192.168.0.37,192.168.0.39
+#python3 /NGI-support-main/config_host_static_netperf.py 10 192.168.0.2,192.168.0.4,192.168.0.9,192.168.0.11,192.168.0.15,192.168.0.17,192.168.0.30,192.168.0.32,192.168.0.37,192.168.0.39
