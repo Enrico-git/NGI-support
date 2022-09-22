@@ -50,8 +50,8 @@ class TrafficGenerator:
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         else:
             #kill previous
-            subprocess.run(['sudo', 'pkill', 'python3'],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            # subprocess.run(['sudo', 'pkill', 'python3'],
+            #     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             server = iperf3.Server()
             server.bind_address=self.my_addr
             server.port=port
