@@ -27,7 +27,6 @@ class TrafficGenerator:
         
         # NOTE: last addresses in the list are used as iperf3 -s
         self.ip_svrs = self.list_ip[-self.svr_num:]
-        self.num_port_each_svr = int(self.cl_num/self.svr_num)
 
         #Grab IP host
         proc = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE, universal_newlines=True)
@@ -81,12 +80,12 @@ class TrafficGenerator:
                     proc.start()
                 for i in range(3):
                     processes[i].join()
-        else: #client
+        else: #client h0, h1, h2, h3 
             for j in range(self.num_load): # 20 test at [10, 20, 30, ..., 100] Mbps
                 for i in range(self.num_iperf):
-                    print(f'iteration {i}/{self.num_iperf}, {(j+1)*10}Mbps')
+                    print(f'iteration {i+1}/{self.num_iperf}, {(j+1)*10}Mbps')
                     if self.hostname == 'h0' and self.gender == 'rtt':
-                        server_hostname = self.ip_svrs[0]    #h6
+                        server_hostname = self.ip_svrs[0]    #h4
                         port=self.first_port + int(self.hostname[1:])
                         duration=20
 
@@ -135,5 +134,7 @@ if __name__ == '__main__':
     tf.generate_traffic()
     
 
-#python3 NGI-support-main/config_host.py train 10 h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
-#python3 NGI-support-main/config_host.py test 15 h0 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
+#python3 /NGI-support-main/config_host4sw.py tput 10 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
+#python3 /NGI-support-main/config_host4sw.py rtt 10 192.168.0.4,192.168.0.6,192.168.0.10,192.168.0.12,192.168.0.16,192.168.0.18
+
+#NOTE: rtt only on h0, h4!!
