@@ -1,3 +1,7 @@
+#This generate random traffic.
+#Works in 4SW topology only because
+#GENI nodes doesn't allow more than 4 process.
+
 import sys
 import random
 import subprocess

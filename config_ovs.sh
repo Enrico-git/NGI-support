@@ -2,10 +2,11 @@
 
 # It's supposed that the address for the hosts 
 # and switches goes from .0.1 to .6.255
+# It could be even more but GENI doesn't support
+# all these nodes.
 INTFS=$(ip address | grep 192.168.[0-6])
 
 IP_CTRL=${1}
-#SW=$(ls -A /sys/class/net | grep s[0-9] )
 SW=${2}
 NUM_INTFS=$(ls -A /sys/class/net | wc -l)
 

@@ -1,4 +1,4 @@
-#This is for 4SW topology. 
+#This generate traffic in the 4SW topology. 
 # h0-h4
 # h1-h5
 # h2-h5

@@ -17,8 +17,6 @@ while (! sudo docker stats --no-stream ); do
   sleep 1
 done
 
-sudo touch happy2.txt
-
 echo "Downloading Mystique Image"
 sudo docker pull enrico2docker/ubuntu-mystique:1.4
 
@@ -30,5 +28,3 @@ while ( ! sudo docker ps | grep mystique); do
   echo "Waiting for Docker container"
   sleep 3
 done
-
-sudo touch happy.txt
